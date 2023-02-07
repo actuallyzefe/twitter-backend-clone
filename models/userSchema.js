@@ -1,5 +1,4 @@
-import { strict } from 'assert';
-import mongoose, { Schema } from 'mongoose';
+const mongoose = require('mongoose');
 const validator = require('validator');
 
 const userSchema = new mongoose.Schema({
@@ -7,6 +6,7 @@ const userSchema = new mongoose.Schema({
     type: String,
     required: [true, 'A user must have name'],
   },
+
   email: {
     type: String,
     required: [true, 'Please provide an email'],
@@ -17,6 +17,17 @@ const userSchema = new mongoose.Schema({
   password: {
     type: String,
     required: [true, 'Please enter a password'],
+  },
+  passwordConfirm: {
+    type: String,
+    required: [true, 'Please confirm your password'],
+    validate: {
+      // THIS ONLY WORKS on CREATE and SAVE
+      validator: function (el) {
+        return el === this.password;
+      },
+      message: 'Passwords are not same',
+    },
   },
 });
 
