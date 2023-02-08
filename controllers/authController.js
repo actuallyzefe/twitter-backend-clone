@@ -11,5 +11,21 @@ exports.signup = async (req, res, next) => {
 
   res.status(201).json({
     status: 'Success',
+    data: newUser,
+  });
+};
+
+exports.login = async (req, res) => {
+  res.send('SUCCESS');
+};
+
+exports.getAllUsers = async (req, res) => {
+  const users = await User.find();
+
+  res.status(200).json({
+    status: 'Success',
+    data: {
+      users,
+    },
   });
 };
