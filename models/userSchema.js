@@ -1,6 +1,7 @@
 const mongoose = require('mongoose');
 const validator = require('validator');
-
+const bcrypt = require('bcrypt');
+const passportLocalMongoose = require('passport-local-mongoose');
 const userSchema = new mongoose.Schema({
   name: {
     type: String,
@@ -32,6 +33,20 @@ const userSchema = new mongoose.Schema({
     select: false,
   },
 });
+
+// HASHING
+
+userSchema.pre('save', async function (next) {
+  const salt = await bcrypt.genSalt();
+  this.password = await bcrypt.hash(this.password, salt);
+
+  this.passwordConfirm = undefined;
+  next();
+});
+
+userSchema.methods.comparePassword = async function (userPass, hashedPass) {
+  return await bcrypt.compare(userPass, hashedPass);
+};
 
 const User = mongoose.model('User', userSchema);
 module.exports = User;

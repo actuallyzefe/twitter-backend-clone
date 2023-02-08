@@ -9,6 +9,7 @@ exports.signup = async (req, res, next) => {
     passwordChangedAt: req.body.passwordChangedAt,
   });
 
+  newUser.password = undefined;
   res.status(201).json({
     status: 'Success',
     data: newUser,
@@ -16,7 +17,31 @@ exports.signup = async (req, res, next) => {
 };
 
 exports.login = async (req, res) => {
-  res.send('SUCCESS');
+  const email = req.body.email;
+  const password = req.body.password;
+
+  try {
+    if (!email || !password) {
+      res.status(400).json({
+        status: 'Fail',
+        msg: 'Please provide email password',
+      });
+    }
+    const user = await User.findOne({ email }).select('+password');
+    if (!user || !(await user.comparePassword(password, user.password))) {
+      res.status(400).json({
+        status: 'Fail',
+        msg: 'Incorrect email or password',
+      });
+    }
+    user.password = undefined;
+    res.status(200).json({
+      status: 'Success',
+      data: user,
+    });
+  } catch (e) {
+    console.log(e);
+  }
 };
 
 exports.getAllUsers = async (req, res) => {
