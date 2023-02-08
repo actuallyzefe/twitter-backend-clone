@@ -1,11 +1,16 @@
 const mongoose = require('mongoose');
 const validator = require('validator');
 const bcrypt = require('bcrypt');
-const passportLocalMongoose = require('passport-local-mongoose');
+
 const userSchema = new mongoose.Schema({
   name: {
     type: String,
     required: [true, 'A user must have name'],
+  },
+
+  nickname: {
+    type: String,
+    required: [true, 'A user must have nickname'],
   },
 
   email: {

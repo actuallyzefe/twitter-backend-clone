@@ -1,8 +1,21 @@
-const User = require('../models/userSchema');
+const User = require('../models/userModel');
+const catchAsync = require('../utils/catchAsync');
 
-exports.signup = async (req, res, next) => {
+exports.getAllUsers = async (req, res) => {
+  const users = await User.find();
+
+  res.status(200).json({
+    status: 'Success',
+    data: {
+      users,
+    },
+  });
+};
+
+exports.signup = catchAsync(async (req, res, next) => {
   const newUser = await User.create({
     name: req.body.name,
+    nickname: req.body.nickname,
     email: req.body.email,
     password: req.body.password,
     passwordConfirm: req.body.passwordConfirm,
@@ -14,7 +27,7 @@ exports.signup = async (req, res, next) => {
     status: 'Success',
     data: newUser,
   });
-};
+});
 
 exports.login = async (req, res) => {
   const email = req.body.email;
@@ -44,13 +57,4 @@ exports.login = async (req, res) => {
   }
 };
 
-exports.getAllUsers = async (req, res) => {
-  const users = await User.find();
-
-  res.status(200).json({
-    status: 'Success',
-    data: {
-      users,
-    },
-  });
-};
+exports.updateNick = async (req, res) => {};
