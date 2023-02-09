@@ -1,5 +1,13 @@
-const User = require('../models/userModel');
+const User = require('../models/UserModel');
 const catchAsync = require('../utils/catchAsync');
+const jwt = require('jsonwebtoken');
+const { sign } = require('crypto');
+
+const signToken = (id) => {
+  return jwt.sign({ id }, process.env.JWT_SECRET, {
+    expiresIn: process.env.JWT_EXPIRES_IN,
+  });
+};
 
 exports.getAllUsers = async (req, res) => {
   const users = await User.find();
@@ -22,14 +30,17 @@ exports.signup = catchAsync(async (req, res, next) => {
     passwordChangedAt: req.body.passwordChangedAt,
   });
 
+  const token = signToken(newUser._id);
+
   newUser.password = undefined;
   res.status(201).json({
     status: 'Success',
+    token,
     data: newUser,
   });
 });
 
-exports.login = async (req, res) => {
+exports.login = catchAsync(async (req, res) => {
   const email = req.body.email;
   const password = req.body.password;
 
@@ -48,13 +59,15 @@ exports.login = async (req, res) => {
       });
     }
     user.password = undefined;
+    const token = signToken(user._id);
     res.status(200).json({
       status: 'Success',
+      token,
       data: user,
     });
   } catch (e) {
     console.log(e);
   }
-};
+});
 
 exports.updateNick = async (req, res) => {};
