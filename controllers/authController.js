@@ -71,3 +71,7 @@ exports.login = catchAsync(async (req, res) => {
 });
 
 exports.updateNick = async (req, res) => {};
+
+exports.updatePassword = async (req, res) => {};
+
+exports.forgotPassword = async (req, res) => {};
