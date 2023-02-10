@@ -41,21 +41,21 @@ exports.signup = catchAsync(async (req, res, next) => {
 });
 
 exports.login = catchAsync(async (req, res) => {
-  const email = req.body.email;
+  const nickname = req.body.nickname;
   const password = req.body.password;
 
   try {
-    if (!email || !password) {
+    if (!nickname || !password) {
       res.status(400).json({
         status: 'Fail',
-        msg: 'Please provide email password',
+        msg: 'Please provide nickname password',
       });
     }
-    const user = await User.findOne({ email }).select('+password');
+    const user = await User.findOne({ nickname }).select('+password');
     if (!user || !(await user.comparePassword(password, user.password))) {
       res.status(400).json({
         status: 'Fail',
-        msg: 'Incorrect email or password',
+        msg: 'Incorrect nickname or password',
       });
     }
     user.password = undefined;

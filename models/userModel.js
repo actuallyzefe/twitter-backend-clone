@@ -11,6 +11,7 @@ const userSchema = new mongoose.Schema({
   nickname: {
     type: String,
     required: [true, 'A user must have nickname'],
+    unique: true,
   },
 
   email: {
