@@ -4,6 +4,7 @@ const {
   signup,
   login,
   updatePassword,
+  updateNick,
 } = require('../controllers/authController');
 const authController = require('../controllers/authController');
 
@@ -15,5 +16,5 @@ router.route('/login').post(login);
 
 router.use(authController.protect);
 router.route('/updateMyPassword').patch(updatePassword);
-
+router.route('/updateMyNick').patch(updateNick);
 module.exports = router;

@@ -1,7 +1,6 @@
 const User = require('../models/UserModel');
 const catchAsync = require('../utils/catchAsync');
 const jwt = require('jsonwebtoken');
-const { promisify } = require('util');
 const AppError = require('../utils/appError');
 
 const signToken = (id) => {
@@ -97,7 +96,22 @@ exports.protect = catchAsync(async (req, res, next) => {
   next();
 });
 
-exports.updateNick = async (req, res) => {};
+exports.updateNick = async (req, res, next) => {
+  const user = await User.findById(req.user.id);
+
+  let newNick = req.body.newNick;
+  user.compareNicks(newNick, user.nickname, res);
+  user.nickname = newNick;
+
+  await user.save();
+
+  // 4) Log user in, send JWT
+  const token = signToken(user.id);
+  res.json({
+    status: 'Success',
+    token: token,
+  });
+};
 
 exports.updatePassword = async (req, res, next) => {
   // 1) Get user from collection
