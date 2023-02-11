@@ -2,6 +2,7 @@ const User = require('../models/UserModel');
 const catchAsync = require('../utils/catchAsync');
 const jwt = require('jsonwebtoken');
 const { sign } = require('crypto');
+const AppError = require('../utils/appError');
 
 const signToken = (id) => {
   return jwt.sign({ id }, process.env.JWT_SECRET, {
@@ -9,35 +10,31 @@ const signToken = (id) => {
   });
 };
 
-exports.getAllUsers = async (req, res) => {
-  const users = await User.find();
-
-  res.status(200).json({
-    status: 'Success',
-    data: {
-      users,
-    },
-  });
-};
-
 exports.signup = catchAsync(async (req, res, next) => {
-  const newUser = await User.create({
-    name: req.body.name,
-    nickname: req.body.nickname,
-    email: req.body.email,
-    password: req.body.password,
-    passwordConfirm: req.body.passwordConfirm,
-    passwordChangedAt: req.body.passwordChangedAt,
-  });
+  try {
+    const newUser = await User.create({
+      name: req.body.name,
+      nickname: req.body.nickname,
+      email: req.body.email,
+      password: req.body.password,
+      passwordConfirm: req.body.passwordConfirm,
+      passwordChangedAt: req.body.passwordChangedAt,
+    });
 
-  const token = signToken(newUser._id);
+    const token = signToken(newUser._id);
 
-  newUser.password = undefined;
-  res.status(201).json({
-    status: 'Success',
-    token,
-    data: newUser,
-  });
+    newUser.password = undefined;
+    res.status(201).json({
+      status: 'Success',
+      token,
+      data: newUser,
+    });
+  } catch (e) {
+    res.status(409).json({
+      msg: e,
+    });
+    console.log(e);
+  }
 });
 
 exports.login = catchAsync(async (req, res) => {
@@ -66,12 +63,42 @@ exports.login = catchAsync(async (req, res) => {
       data: user,
     });
   } catch (e) {
-    console.log(e);
+    res.send(e);
   }
+});
+
+exports.protet = catchAsync(async (req, res, next) => {
+  //1) Getting token and check if it exists
+
+  //2) Verification token
+
+  //3) Check if user exists
+
+  //4) Check if user changed password after the token was issued
+
+  // GRANT ACCESS TO PROTECTED ROUTES
+  req.user = currentUser;
 });
 
 exports.updateNick = async (req, res) => {};
 
-exports.updatePassword = async (req, res) => {};
+exports.updatePassword = async (req, res, next) => {
+  // 1) Get user from collection
+  const user = await User.findById(req.user.id).select('+password');
+  // 2) Check if POSTed current password is correct
+  if (!(await user.comparePassword(req.body.passwordCurrent, user.password))) {
+    return next(new AppError('INCORRECT PASSWORD', 401));
+  }
+  // 3) If so, update password
+  user.password = req.body.password;
+  user.passwordConfirm = req.body.passwordConfirm;
+  await user.save();
+  // 4) Log user in, send JWT
+  const token = signToken(user.id);
+  res.json({
+    status: 'Success',
+    token: token,
+  });
+};
 
 exports.forgotPassword = async (req, res) => {};
