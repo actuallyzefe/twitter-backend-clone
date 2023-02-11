@@ -1,7 +1,7 @@
 const User = require('../models/UserModel');
 const catchAsync = require('../utils/catchAsync');
 const jwt = require('jsonwebtoken');
-const { sign } = require('crypto');
+const { promisify } = require('util');
 const AppError = require('../utils/appError');
 
 const signToken = (id) => {
@@ -67,17 +67,34 @@ exports.login = catchAsync(async (req, res) => {
   }
 });
 
-exports.protet = catchAsync(async (req, res, next) => {
+exports.protect = catchAsync(async (req, res, next) => {
+  let token;
   //1) Getting token and check if it exists
-
+  if (
+    req.headers.authorization &&
+    req.headers.authorization.startsWith('Bearer')
+  ) {
+    token = req.headers.authorization.split(' ')[1];
+  } else if (req.cookies.jwt) {
+    token = req.cookies.jwt;
+  }
+  if (!token) {
+    return next(new AppError('You are not Logged in.', 401));
+  }
   //2) Verification token
-
+  const decoded = jwt.verify(token, process.env.JWT_SECRET);
   //3) Check if user exists
-
+  const currentUser = await User.findById(decoded.id);
+  if (!currentUser) {
+    return next(new AppError('This user no longer exists', 401));
+  }
   //4) Check if user changed password after the token was issued
-
+  if (currentUser.changedPasswordAfter(decoded.iat)) {
+    return next(new AppError('USER RECENTLY CHANGED PASSWORD'));
+  }
   // GRANT ACCESS TO PROTECTED ROUTES
   req.user = currentUser;
+  next();
 });
 
 exports.updateNick = async (req, res) => {};
