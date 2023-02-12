@@ -97,20 +97,29 @@ exports.protect = catchAsync(async (req, res, next) => {
 });
 
 exports.updateNick = async (req, res, next) => {
-  const user = await User.findById(req.user.id);
+  const user = await User.findByIdAndUpdate(req.user.id);
 
   let newNick = req.body.newNick;
-  user.compareNicks(newNick, user.nickname, res);
   user.nickname = newNick;
+
+  // if (newNick == user.nickname) {
+  //   res.json({
+  //     Status: 'Fail',
+  //     Msg: 'New nick cannot be same as old one',
+  //   });
+  // }
 
   await user.save();
 
   // 4) Log user in, send JWT
-  const token = signToken(user.id);
+  let token = signToken(user.id);
   res.json({
+    data: newNick,
     status: 'Success',
     token: token,
   });
+
+  next();
 };
 
 exports.updatePassword = async (req, res, next) => {
