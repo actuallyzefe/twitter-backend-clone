@@ -47,6 +47,18 @@ const userSchema = new mongoose.Schema({
     type: Array,
     default: [],
   },
+
+  avatar: {
+    type: String,
+    default: '',
+  },
+
+  bio: {
+    type: String,
+    max: 150,
+    default: '',
+  },
+
   passwordChangedAt: Date,
   passwordResetToken: String,
   passwordResetExpires: Date,

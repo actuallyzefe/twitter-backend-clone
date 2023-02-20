@@ -1,5 +1,5 @@
 const express = require('express');
-const app = require('../app');
+
 const {
   signup,
   login,
@@ -16,5 +16,5 @@ router.route('/login').post(login);
 
 router.use(authController.protect);
 router.route('/updateMyPassword').patch(updatePassword);
-router.route('/updateMyNick').patch(updateNick);
+
 module.exports = router;
