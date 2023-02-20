@@ -58,17 +58,17 @@ exports.followUser = async (req, res, next) => {
   const currentUserNick = req.user.nickname;
   const otherUserNick = req.body.nickname;
 
-  if (req.body.nickname !== req.user.nickname) {
+  if (otherUserNick !== currentUserNick) {
     try {
       const user = await User.findOne({ currentUserNick });
       const otherUser = await User.findOne({ otherUserNick });
 
-      if (!otherUser.followers.includes(req.user.nickname)) {
+      if (!otherUser.followers.includes(currentUserNick)) {
         await user.updateOne({
-          $push: { followings: req.body.nickname },
+          $push: { followings: otherUserNick },
         });
         await otherUser.updateOne({
-          $push: { followers: req.user.nickname },
+          $push: { followers: currentUserNick },
         });
       } else {
         res.status(403).json({
@@ -80,7 +80,7 @@ exports.followUser = async (req, res, next) => {
 
       res.status(400).json({
         stauts: 'Success',
-        msg: `${req.body.nickname} followed`,
+        msg: `${otherUserNick} followed`,
       });
     } catch (e) {
       res.status(500).json({
