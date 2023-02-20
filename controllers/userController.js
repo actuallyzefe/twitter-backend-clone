@@ -64,16 +64,15 @@ exports.followUser = async (req, res, next) => {
       const otherUser = await User.findOne({ nickname: otherUserNick });
 
       if (!otherUser.followers.includes(currentUserNick)) {
-        user.followings.push(otherUser.nickname);
-        await user.save();
-
-        otherUser.followers.push(user.nickname);
-        await otherUser.save();
-
-        res.status(400).json({
-          stauts: 'Success',
-          msg: `${otherUserNick} followed`,
+        await user.updateOne({
+          $push: { followings: otherUserNick },
         });
+        // await user.save();
+
+        await otherUser.updateOne({
+          $push: { followers: currentUserNick },
+        });
+        // await otherUser.save();
       } else {
         res.status(403).json({
           status: 'Fail',
@@ -81,6 +80,11 @@ exports.followUser = async (req, res, next) => {
         });
         next();
       }
+
+      res.status(200).json({
+        stauts: 'Success',
+        msg: `${otherUserNick} followed`,
+      });
     } catch (e) {
       res.status(500).json({
         status: 'Fail',
