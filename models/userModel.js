@@ -38,6 +38,15 @@ const userSchema = new mongoose.Schema({
     },
     select: false,
   },
+
+  followers: {
+    type: Array,
+    default: [],
+  },
+  followings: {
+    type: Array,
+    default: [],
+  },
   passwordChangedAt: Date,
   passwordResetToken: String,
   passwordResetExpires: Date,
