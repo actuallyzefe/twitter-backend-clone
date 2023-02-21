@@ -23,7 +23,7 @@ exports.getAllUsers = async (req, res) => {
 };
 
 exports.getUser = async (req, res) => {
-  const user = await User.findById(req.params.id);
+  const user = await User.findById(req.params.id).populate('tweets');
 
   res.status(200).json({
     status: 'Success',

@@ -2,73 +2,79 @@ const mongoose = require('mongoose');
 const validator = require('validator');
 const bcrypt = require('bcrypt');
 
-const userSchema = new mongoose.Schema({
-  name: {
-    type: String,
-    required: [true, 'A user must have name'],
-  },
-
-  nickname: {
-    type: String,
-    required: [true, 'A user must have nickname'],
-    unique: true,
-  },
-
-  email: {
-    type: String,
-    required: [true, 'Please provide an email'],
-    unique: true,
-    validate: [validator.isEmail, 'Please provide a valid email'],
-  },
-
-  role: {
-    type: String,
-    enum: ['user', 'guide', 'lead-guide', 'admin'],
-    default: 'user',
-  },
-
-  password: {
-    type: String,
-    required: [true, 'Please enter a password'],
-    select: false,
-  },
-  passwordConfirm: {
-    type: String,
-    required: [true, 'Please confirm your password'],
-    validate: {
-      // create ve save için çalışır
-      validator: function (el) {
-        return el === this.password;
-      },
-      message: 'Passwords are not same',
+const userSchema = new mongoose.Schema(
+  {
+    name: {
+      type: String,
+      required: [true, 'A user must have name'],
     },
-    select: false,
-  },
 
-  followers: {
-    type: Array,
-    default: [],
-  },
-  followings: {
-    type: Array,
-    default: [],
-  },
+    nickname: {
+      type: String,
+      required: [true, 'A user must have nickname'],
+      unique: true,
+    },
 
-  avatar: {
-    type: String,
-    default: '',
-  },
+    email: {
+      type: String,
+      required: [true, 'Please provide an email'],
+      unique: true,
+      validate: [validator.isEmail, 'Please provide a valid email'],
+    },
 
-  bio: {
-    type: String,
-    max: 150,
-    default: '',
-  },
+    role: {
+      type: String,
+      enum: ['user', 'guide', 'lead-guide', 'admin'],
+      default: 'user',
+    },
 
-  passwordChangedAt: Date,
-  passwordResetToken: String,
-  passwordResetExpires: Date,
-});
+    password: {
+      type: String,
+      required: [true, 'Please enter a password'],
+      select: false,
+    },
+    passwordConfirm: {
+      type: String,
+      required: [true, 'Please confirm your password'],
+      validate: {
+        // create ve save için çalışır
+        validator: function (el) {
+          return el === this.password;
+        },
+        message: 'Passwords are not same',
+      },
+      select: false,
+    },
+
+    followers: {
+      type: Array,
+      default: [],
+    },
+    followings: {
+      type: Array,
+      default: [],
+    },
+
+    avatar: {
+      type: String,
+      default: '',
+    },
+
+    bio: {
+      type: String,
+      max: 150,
+      default: '',
+    },
+
+    passwordChangedAt: Date,
+    passwordResetToken: String,
+    passwordResetExpires: Date,
+  },
+  {
+    toJSON: { virtuals: true },
+    toObject: { virtuals: true },
+  }
+);
 
 // HASHING
 
