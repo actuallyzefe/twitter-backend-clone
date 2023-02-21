@@ -76,8 +76,14 @@ const userSchema = new mongoose.Schema(
   }
 );
 
-// HASHING
+// Virtual Props
+userSchema.virtual('tweets', {
+  ref: 'Post',
+  foreignField: 'user',
+  localField: '_id',
+});
 
+// HASHING
 userSchema.pre('save', async function (next) {
   if (!this.isModified('password')) return next();
   const salt = await bcrypt.genSalt();
@@ -106,12 +112,6 @@ userSchema.methods.changedPasswordAfter = function (JWTTimeStamp) {
 userSchema.methods.comparePassword = async function (userPass, hashedPass) {
   return await bcrypt.compare(userPass, hashedPass);
 };
-
-userSchema.virtual('tweets', {
-  ref: 'Post',
-  foreignField: 'user',
-  localField: '_id',
-});
 
 const User = mongoose.model('User', userSchema);
 module.exports = User;
