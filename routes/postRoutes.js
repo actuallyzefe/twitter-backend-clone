@@ -5,6 +5,7 @@ const router = express.Router();
 
 router.get('/allTweets', postController.getAllTweets);
 
+router.use(authController.protect);
 router
   .route('/createPost')
   .post(

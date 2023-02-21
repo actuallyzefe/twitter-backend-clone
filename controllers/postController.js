@@ -13,14 +13,13 @@ exports.getAllTweets = async (req, res) => {
 };
 
 exports.createPost = async (req, res) => {
-  const newPost = await Post.create(req.body);
   if (!req.body.user) req.body.user = req.user.id;
+  const newPost = await Post.create(req.body);
 
   res.status(201).json({
     status: 'Success',
     data: {
       post: newPost,
-      postedBy: user,
     },
   });
 };
