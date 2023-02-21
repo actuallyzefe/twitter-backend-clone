@@ -21,6 +21,12 @@ const userSchema = new mongoose.Schema({
     validate: [validator.isEmail, 'Please provide a valid email'],
   },
 
+  role: {
+    type: String,
+    enum: ['user', 'guide', 'lead-guide', 'admin'],
+    default: 'user',
+  },
+
   password: {
     type: String,
     required: [true, 'Please enter a password'],
@@ -48,6 +54,9 @@ const userSchema = new mongoose.Schema({
     default: [],
   },
 
+  tweets: {
+    type: Array,
+  },
   avatar: {
     type: String,
     default: '',
