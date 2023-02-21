@@ -54,9 +54,6 @@ const userSchema = new mongoose.Schema({
     default: [],
   },
 
-  tweets: {
-    type: Array,
-  },
   avatar: {
     type: String,
     default: '',
@@ -103,6 +100,12 @@ userSchema.methods.changedPasswordAfter = function (JWTTimeStamp) {
 userSchema.methods.comparePassword = async function (userPass, hashedPass) {
   return await bcrypt.compare(userPass, hashedPass);
 };
+
+userSchema.virtual('tweets', {
+  ref: 'Post',
+  foreignField: 'user',
+  localField: '_id',
+});
 
 const User = mongoose.model('User', userSchema);
 module.exports = User;

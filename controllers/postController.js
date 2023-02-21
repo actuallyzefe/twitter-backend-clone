@@ -1,4 +1,3 @@
-const { findOne, findById } = require('./../models/PostModel');
 const Post = require('./../models/PostModel');
 
 exports.getAllTweets = async (req, res) => {

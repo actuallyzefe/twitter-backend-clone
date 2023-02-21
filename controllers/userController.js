@@ -22,9 +22,13 @@ exports.getAllUsers = async (req, res) => {
   });
 };
 
-exports.getMe = (req, res, next) => {
-  req.params.id = req.user.id; // AuthController kısmında user infosunu çekebiliyorduk => exports.protect kısmının sonunda hazırladık
-  next();
+exports.getUser = async (req, res) => {
+  const user = await User.findById(req.params.id);
+
+  res.status(200).json({
+    status: 'Success',
+    user,
+  });
 };
 
 exports.updateMe = catchAsync(async (req, res, next) => {
