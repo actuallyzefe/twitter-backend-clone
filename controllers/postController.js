@@ -1,3 +1,4 @@
+const AppError = require('../utils/appError');
 const Post = require('./../models/PostModel');
 
 exports.getAllTweets = async (req, res) => {
@@ -27,15 +28,11 @@ exports.deletePost = async (req, res, next) => {
   const post = await Post.findByIdAndDelete(req.params.id);
 
   if (!post) {
-    res.status(404).json({
-      Stuats: 'Fail',
-      msg: 'No post found with that ID',
-    });
+    return next(new AppError('No document found with that ID', 404));
   }
 
   res.status(204).json({
     Status: 'Success',
     msg: 'Deleted',
   });
-  next();
 };
