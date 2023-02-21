@@ -22,13 +22,10 @@ exports.getAllUsers = async (req, res) => {
   });
 };
 
-exports.getUser = async (req, res) => {
+exports.getUser = async (req, res, next) => {
   const user = await User.findById(req.params.id).populate('tweets');
   if (!user) {
-    res.status(404).json({
-      Status: 'Fail',
-      msg: 'No user found with that ID',
-    });
+    return next(new AppError('No document found with that ID', 404));
   }
 
   res.status(200).json({

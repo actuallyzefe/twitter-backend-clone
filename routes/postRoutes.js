@@ -14,5 +14,7 @@ router
     authController.restrictTo('user'),
     postController.createPost
   );
+router.patch('/:id/likePost', postController.likePost);
+router.patch('/:id/dislikePost', postController.dislikePost);
 
 module.exports = router;

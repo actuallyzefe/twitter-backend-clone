@@ -36,3 +36,34 @@ exports.deletePost = async (req, res, next) => {
     msg: 'Deleted',
   });
 };
+
+exports.likePost = async (req, res, next) => {
+  const post = await Post.findById(req.params.id);
+  const user = req.user.nickname;
+  if (!post) {
+    return next(new AppError('No document found with that ID', 404));
+  }
+  if (!post.likes.includes(user)) {
+    await post.updateOne({ $push: { likes: user } });
+    res.status(200).json({
+      Status: 'Success',
+      msg: 'Post liked',
+    });
+  }
+};
+
+exports.dislikePost = async (req, res, next) => {
+  const post = await Post.findById(req.params.id);
+  const user = req.user.nickname;
+  if (!post) {
+    return next(new AppError('No document found with that ID', 404));
+  }
+
+  if (post.likes.includes(user)) {
+    await post.updateOne({ $pull: { likes: user } });
+    res.status(200).json({
+      Status: 'Success',
+      msg: 'Post disliked',
+    });
+  }
+};
