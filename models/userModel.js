@@ -95,14 +95,5 @@ userSchema.methods.comparePassword = async function (userPass, hashedPass) {
   return await bcrypt.compare(userPass, hashedPass);
 };
 
-userSchema.methods.compareNicks = async function (newNick, oldNick, res) {
-  if (newNick == oldNick) {
-    res.json({
-      Status: 'Fail',
-      Msg: 'New nick cannot be same as old one',
-    });
-  }
-};
-
 const User = mongoose.model('User', userSchema);
 module.exports = User;
