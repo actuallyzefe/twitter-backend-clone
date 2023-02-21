@@ -130,3 +130,6 @@ exports.updatePassword = async (req, res, next) => {
 exports.forgotPassword = async (req, res) => {
   console.log(req);
 };
+exports.resetPassword = async (req, res) => {
+  console.log(req);
+};
