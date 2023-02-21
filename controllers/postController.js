@@ -22,3 +22,20 @@ exports.createPost = async (req, res) => {
     },
   });
 };
+
+exports.deletePost = async (req, res, next) => {
+  const post = await Post.findByIdAndDelete(req.params.id);
+
+  if (!post) {
+    res.status(404).json({
+      Stuats: 'Fail',
+      msg: 'No post found with that ID',
+    });
+  }
+
+  res.status(204).json({
+    Status: 'Success',
+    msg: 'Deleted',
+  });
+  next();
+};

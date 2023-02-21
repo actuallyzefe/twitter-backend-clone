@@ -6,6 +6,7 @@ const router = express.Router();
 router.get('/allTweets', postController.getAllTweets);
 
 router.use(authController.protect);
+router.route('/:id/deletePost').delete(postController.deletePost);
 router
   .route('/createPost')
   .post(

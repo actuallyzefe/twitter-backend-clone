@@ -24,6 +24,12 @@ exports.getAllUsers = async (req, res) => {
 
 exports.getUser = async (req, res) => {
   const user = await User.findById(req.params.id).populate('tweets');
+  if (!user) {
+    res.status(404).json({
+      Status: 'Fail',
+      msg: 'No user found with that ID',
+    });
+  }
 
   res.status(200).json({
     status: 'Success',
