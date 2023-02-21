@@ -54,6 +54,7 @@ exports.updateMe = catchAsync(async (req, res, next) => {
 
 // FOLLOW UNFOLLOW LOGIC
 
+// follow part // NEED REFACTOR
 exports.followUser = async (req, res, next) => {
   const currentUserNick = req.user.nickname;
   const otherUserNick = req.body.nickname;
@@ -97,6 +98,56 @@ exports.followUser = async (req, res, next) => {
     res.status(403).json({
       status: 'Fail',
       msg: 'You cant follow yourself',
+    });
+    next();
+  }
+  next();
+};
+
+// UNFOLLOW PART -- WILL BE REFACTORED
+exports.unfollowUser = async (req, res, next) => {
+  const currentUserNick = req.user.nickname;
+  const otherUserNick = req.body.nickname;
+
+  if (otherUserNick !== currentUserNick) {
+    try {
+      const user = await User.findOne({ nickname: currentUserNick });
+      const otherUser = await User.findOne({ nickname: otherUserNick });
+
+      if (otherUser.followers.includes(currentUserNick)) {
+        await user.updateOne({
+          $pull: { followings: otherUserNick },
+        });
+        // await user.save();
+
+        await otherUser.updateOne({
+          $pull: { followers: currentUserNick },
+        });
+        // await otherUser.save();
+      } else {
+        res.status(403).json({
+          status: 'Fail',
+          msg: 'you cant unfollow this user',
+        });
+        next();
+      }
+
+      res.status(200).json({
+        stauts: 'Success',
+        msg: `${otherUserNick} unfollowed`,
+      });
+    } catch (e) {
+      res.status(500).json({
+        status: 'Fail',
+        msg: e,
+      });
+      console.log(e);
+      next();
+    }
+  } else {
+    res.status(403).json({
+      status: 'Fail',
+      msg: 'You cant unfollow yourself',
     });
     next();
   }
