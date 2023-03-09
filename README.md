@@ -8,3 +8,11 @@ S3 file uploading on the way.
 
 There are some code blocks that those need refactor.
 The refactor code will be implemented soon.
+
+# How to install
+## First of all you should configure your .env
+
+npm install 
+
+# How to run
+npm run start
