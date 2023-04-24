@@ -7,15 +7,23 @@ const router = express.Router();
 router.get('/allTweets', postController.getAllTweets);
 
 router.use(authController.protect);
-router
-  .route('/createPost')
-  .post(authController.restrictTo('user'), postController.createPost);
 
+// Creating Post
+router.post(
+  '/createPost',
+  authController.restrictTo('user'),
+  postController.createPost
+);
+
+// Liking - Disliking Posts
 router.patch('/:id/likePost', postController.likePost);
 router.patch('/:id/dislikePost', postController.dislikePost);
 
-router
-  .route('/:id/deletePost')
-  .delete(checkUser.checkUser, postController.deletePost);
+// Deleting Posts
+router.delete(
+  '/:id/deletePost',
+  checkUser.isCorrectUser,
+  postController.deletePost
+);
 
 module.exports = router;
