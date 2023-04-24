@@ -36,13 +36,13 @@ const userSchema = new mongoose.Schema(
     passwordConfirm: {
       type: String,
       required: [true, 'Please confirm your password'],
-      validate: {
-        // create ve save için çalışır
-        validator: function (el) {
-          return el === this.password;
-        },
-        message: 'Passwords are not same',
-      },
+      // validate: {
+      //   // create ve save için çalışır
+      //   validator: function (el) {
+      //     return el === this.password;
+      //   },
+      //   message: 'Passwords are not same',
+      // },
       select: false,
     },
 

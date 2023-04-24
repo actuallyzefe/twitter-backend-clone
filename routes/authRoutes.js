@@ -7,11 +7,11 @@ const {
   updateNick,
 } = require('../controllers/authController');
 const authController = require('../controllers/authController');
-
+const passValidation = require('../middlewares/passConfirm');
 const router = express.Router();
 
 // auth
-router.route('/signup').post(signup);
+router.route('/signup').post(passValidation.passConfirm, signup);
 router.route('/login').post(login);
 
 router.use(authController.protect);
