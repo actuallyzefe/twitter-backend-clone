@@ -13,7 +13,7 @@ const router = express.Router();
 // auth
 router.route('/signup').post(passValidation.passConfirm, signup);
 router.route('/login').post(login);
-
+router.post('/forgotPassword', authController.forgotPassword);
 router.use(authController.protect);
 router.route('/updateMyPassword').patch(updatePassword);
 

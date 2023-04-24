@@ -2,6 +2,8 @@ const User = require('../models/UserModel');
 const catchAsync = require('../utils/catchAsync');
 const jwt = require('jsonwebtoken');
 const AppError = require('../utils/appError');
+const sendEmail = require('./../utils/email');
+const crypto = require('crypto');
 
 const signToken = (id) => {
   return jwt.sign({ id }, process.env.JWT_SECRET, {
@@ -127,7 +129,7 @@ exports.updatePassword = async (req, res, next) => {
   });
 };
 
-exports.forgotPassword = async (req, res) => {
+exports.forgotPassword = async (req, res, next) => {
   // 1) Get user based on POSTed email
   let { email } = req.body;
   const user = await User.findOne({ email });
@@ -139,9 +141,9 @@ exports.forgotPassword = async (req, res) => {
   await user.save({ validateBeforeSave: false });
 
   // 3) Send it to user's email
-  const resetURL = `${req.prtocol}://${req.get(
+  const resetURL = `${req.protocol}://${req.get(
     'host'
-  )}/auth/resetPassword/${resetToken}`;
+  )}/resetPassword/${resetToken}`;
   const message = `Forgot your password? Submit a PATCH request with your new password and passwordConfirm to: ${resetURL}.\nIf you didn't forget your password, please ignore this email!`;
 
   try {
@@ -166,5 +168,33 @@ exports.forgotPassword = async (req, res) => {
     );
   }
 };
-exports.resetPassword = async (req, res) => {};
-// will be added
+exports.resetPassword = async (req, res) => {
+  // 1) Get user based on the token
+  const hashedToken = crypto
+    .createHash('sha256')
+    .update(req.params.token)
+    .digest('hex');
+
+  const user = await User.findOne({
+    passwordResetToken: hashedToken,
+    passwordResetExpires: { $gt: Date.now() },
+  });
+
+  // 2) If token has not expired, and there is user, set the new password
+  if (!user) {
+    return next(new AppError('Token is invalid or has expired', 400));
+  }
+  user.password = req.body.password;
+  user.passwordConfirm = req.body.passwordConfirm;
+  user.passwordResetToken = undefined;
+  user.passwordResetExpires = undefined;
+  await user.save();
+
+  // 3) Update changedPasswordAt property for the user => userModel middleware
+  // 4) Log the user in, send JWT
+  const token = signToken(user._id);
+  res.status(200).json({
+    status: 'Success',
+    token: token,
+  });
+};
