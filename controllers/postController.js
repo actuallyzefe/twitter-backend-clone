@@ -25,20 +25,26 @@ exports.createPost = async (req, res) => {
 };
 
 exports.deletePost = async (req, res, next) => {
-  const post = await Post.findByIdAndDelete(req.params.id);
+  try {
+    const deletedPost = await Post.findByIdAndDelete(req.params.id);
 
-  if (!post) {
-    return next(new AppError('No document found with that ID', 404));
+    if (!deletedPost) {
+      return next(new AppError('No document found with that ID', 404));
+    }
+
+    res.status(204).json({
+      status: 'success',
+      data: null,
+    });
+  } catch (err) {
+    next(err);
   }
-
-  res.status(204).json({
-    Status: 'Success',
-    msg: 'Deleted',
-  });
+  next();
 };
 
 exports.likePost = async (req, res, next) => {
   const post = await Post.findById(req.params.id);
+
   const user = req.user.nickname;
   if (!post) {
     return next(new AppError('No document found with that ID', 404));
