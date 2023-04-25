@@ -6,6 +6,7 @@ const {
   unfollowUser,
   getUser,
   uploadUserPhoto,
+  resizeUserPhoto,
 } = require('../controllers/userController');
 
 const router = require('express').Router();
@@ -14,7 +15,7 @@ router.route('/allUsers').get(getAllUsers);
 router.get('/:id/getUser', getUser);
 
 router.use(authController.protect);
-router.route('/updateMe').patch(uploadUserPhoto, updateMe);
+router.route('/updateMe').patch(uploadUserPhoto, resizeUserPhoto, updateMe);
 router.route('/followUser').patch(followUser);
 router.route('/unfollowUser').patch(unfollowUser);
 
