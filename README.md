@@ -8,6 +8,8 @@ I will keep update the project
 
 Only the owner of the post can delete the post | As it should be
 
+passwordReset route was protected and that causes an error => now it is not protected (and should not be)
+
 # Added Features
 
 Image uploading with Multer
