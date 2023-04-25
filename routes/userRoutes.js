@@ -16,5 +16,5 @@ router.use(authController.protect);
 router.route('/updateMe').patch(updateMe);
 router.route('/followUser').patch(followUser);
 router.route('/unfollowUser').patch(unfollowUser);
-router.patch('/resetPassword/:token', authController.resetPassword);
+
 module.exports = router;

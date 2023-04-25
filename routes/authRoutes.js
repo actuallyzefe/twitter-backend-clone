@@ -14,6 +14,7 @@ const router = express.Router();
 router.route('/signup').post(passValidation.passConfirm, signup);
 router.route('/login').post(login);
 router.post('/forgotPassword', authController.forgotPassword);
+router.patch('/resetPassword/:token', authController.resetPassword);
 router.use(authController.protect);
 router.route('/updateMyPassword').patch(updatePassword);
 
