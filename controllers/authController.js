@@ -47,8 +47,7 @@ exports.signup = catchAsync(async (req, res, next) => {
 });
 
 exports.login = catchAsync(async (req, res) => {
-  const nickname = req.body.nickname;
-  const password = req.body.password;
+  const { nickname, password } = req.body;
 
   try {
     if (!nickname || !password) {
