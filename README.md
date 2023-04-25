@@ -4,12 +4,18 @@ I tried to clone the backend part of Twitter.
 
 I will keep update the project
 
-fixed: Only the owner of the post can delete the post | As it should be
+# Fixed
 
-Feat: Image uploading with Multer
-Feat: Password Reset Tokens sending via Nodemailer - Mailtrap
+Only the owner of the post can delete the post | As it should be
 
-Upcoming Features => S3 file uploading | ExpressJS to NestJS
+# Added Features
+
+Image uploading with Multer
+Password Reset Tokens sending via Nodemailer - Mailtrap
+
+# Upcoming Features
+
+S3 file uploading | ExpressJS to NestJS
 
 There are some code blocks that those need refactor.
 The refactored code will be implemented soon.
