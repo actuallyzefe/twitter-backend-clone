@@ -11,6 +11,7 @@ Only the owner of the post can delete the post | As it should be
 # Added Features
 
 Image uploading with Multer
+
 Password Reset Tokens sending via Nodemailer - Mailtrap
 
 # Upcoming Features
