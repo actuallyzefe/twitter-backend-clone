@@ -21,6 +21,8 @@ exports.signup = catchAsync(async (req, res, next) => {
     passwordChangedAt,
   } = req.body;
   try {
+    const existingUser = await User.findOne({ email });
+    if (existingUser) return res.status(400).send('Email in use');
     const newUser = await User.create({
       name,
       nickname,
