@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [1.1.2](https://github.com/actuallyzefe/twitter-backend-clone/compare/v1.1.1...v1.1.2) (2023-04-28)
+
+
+### Bug Fixes
+
+* interesting bug fixed type O' ([2ddadfc](https://github.com/actuallyzefe/twitter-backend-clone/commit/2ddadfcbe4e1ca9397421e34ce201b18ba1ae792))
+* understandable response for invalid email ([0c6f036](https://github.com/actuallyzefe/twitter-backend-clone/commit/0c6f03664d49b9c67d06728dc789710a88e48556))
+
 ### [1.1.1](https://github.com/actuallyzefe/twitter-backend-clone/compare/v1.1.0...v1.1.1) (2023-04-25)
 
 
