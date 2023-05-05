@@ -4,6 +4,9 @@ I tried to clone the backend part of Twitter.
 
 I will keep update the project
 
+Here's the NestJS version of this repo: 
+https://github.com/actuallyzefe/twitter-clone
+
 # Fixed
 
 Only the owner of the post can delete the post | As it should be
